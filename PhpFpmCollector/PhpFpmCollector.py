@@ -13,7 +13,8 @@ class PhpFpmCollector(diamond.collector.Collector):
         """
         Returns the default collector settings
         """
-        return {
+        config = super(PhpFpmCollector, self).get_default_config()
+        config.update({
             'path':     'php.fpm',
             
             # Which rows of 'status' you would like to publish.
@@ -23,7 +24,8 @@ class PhpFpmCollector(diamond.collector.Collector):
             #'publish': ''
 
 	    'status_uri': 	'/fpm-status',
-       }
+        })
+        return config
 
     def get_stats(self, config):
         # Always ignoe this metrics:
