@@ -46,6 +46,7 @@ class PhpFpmCollector(diamond.collector.Collector):
         return stats
 
     def collect(self):
+        known_counters = ['accepted_conn']
         stats = self.get_stats(self.config)
         # figure out what we're configured to get, defaulting to everything
         desired = self.config.get('publish', stats.keys())
@@ -53,7 +54,10 @@ class PhpFpmCollector(diamond.collector.Collector):
         for stat in desired:
             if stat in stats:
                 # we have it
-                self.publish(stat, stats[stat])
+                if stat in known_counters:
+                    self.publish_counter(stat, stats[stat], time_delta=False)
+                else:
+                    self.publish(stat, stats[stat])
             else:
                 # we don't, must be somehting configured in publish so we
                 # should log an error about it
